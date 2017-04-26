@@ -107,6 +107,8 @@ public:
     //allocation dynamique page 28 et autre version page 50
       
     //return *this;
+    // Selon le prof, utiliser la fonction de la page 50 (chap 10)
+    // ne pas mettre le move()
   }
   
 public:
