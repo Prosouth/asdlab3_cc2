@@ -79,7 +79,7 @@ public:
    *
    *  @param other la LinkedList à copier
    */
-  LinkedList(LinkedList& other) // cc2 et +
+  LinkedList(const LinkedList& other) // cc2 et +
   {
   }
 
