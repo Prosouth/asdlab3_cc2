@@ -7,6 +7,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <cstdlib>
+#include <algorithm>    
+
 using namespace std;
 
 /// Forward declaration classe
@@ -81,6 +83,9 @@ public:
    */
   LinkedList(const LinkedList& other) // cc2 et +
   {
+      other.head->data = new Node[other.nbElements];
+      nbElements = other.nbElements;
+      copy(other.head->data + nbElements, other.head->next);
   }
 
 public:
@@ -99,7 +104,8 @@ public:
    */
   LinkedList& operator = (const LinkedList& other) // cc2 et +
   {
-    //allocation dynamique page 28
+    //allocation dynamique page 28 et autre version page 50
+      
     //return *this;
   }
   
@@ -299,7 +305,7 @@ public:
 
       if (pos == 0)
       {
-          head == nullptr;
+          head = nullptr;
       }
       else
       {
