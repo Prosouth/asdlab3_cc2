@@ -373,6 +373,7 @@ public:
           cur = cur->next;
           count++;
       }
+      return -1;
   }
   
   /**
