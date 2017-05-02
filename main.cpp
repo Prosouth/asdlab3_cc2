@@ -7,7 +7,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <cstdlib>
-#include <algorithm>    
+#include <algorithm>
 
 using namespace std;
 
@@ -83,30 +83,8 @@ public:
    */
   LinkedList(const LinkedList& other) // cc2 et +
   {
-      LinkedList copy;
-      if(other.head->data == NULL)
-      {
-           copy = other; 
-      }
-      
-      
-      copy.push_front(other.head->data);
-      Node* end_copy = copy.head;
-      
-      Node* cur = other.head->next;
-      while(cur != NULL)
-      {
-          copy.insert(end_copy->data, cur->data);
-          end_copy = end_copy->next;
-          cur = cur->next;
-      }
-      
-       copy = other; 
-      
-      /*
-      other.head->data = new Node[other.nbElements];
-      nbElements = other.nbElements;
-      copy(other.head->data + nbElements, other.head->next);*/
+      head = nullptr;
+      *this = other;
   }
 
 public:
@@ -126,15 +104,50 @@ public:
   LinkedList& operator = (const LinkedList& other) // cc2 et +
   {
     //allocation dynamique page 28 et autre version page 50
+    /*
       LinkedList tmp = other;
 
       //swap tmp et this
       swap(head, tmp.head);
       swap(nbElements, tmp.nbElements);
 
+      using std::swap;
+      swap(this->next, rhs->next);
+      swap(this->data, rhs->data);
+    */
     //return *this;
     // Selon le prof, utiliser la fonction de la page 50 (chap 10)
     // ne pas mettre le move()
+    // 2017-05-02@18:45
+    if (this != &other) // s'il sont différents
+    {
+        if (head != nullptr)
+        {
+            // Vider la liste
+            while (head != nullptr)
+            {
+                pop_front();
+            }
+        }
+        Node* copyPtr = nullptr;
+        Node* originalPtr = other.head;
+
+        while (originalPtr != nullptr)
+        {
+            if (head == nullptr)
+            {
+                head = new Node(originalPtr->data);
+                copyPtr = head;
+            }
+            else
+            {
+                copyPtr->next = new Node(originalPtr->data);
+                copyPtr = copyPtr->next;
+            }
+            originalPtr = originalPtr->next;
+        }
+    }
+    return *this;
   }
   
 public:
@@ -144,7 +157,7 @@ public:
   ~LinkedList() 
   {
       Node* current = head;
-      while(current != nullptr)
+      while (current != nullptr)
       {
           Node* newNode = current;
           current = newNode->next;
