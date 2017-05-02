@@ -244,7 +244,6 @@ public:
           throw out_of_range("LinkedList::insert");
       }
 
-      Node* prev = head;
       Node* cur = head;
       size_t counter = 1;
 
@@ -368,15 +367,16 @@ public:
   size_t find(const_reference value) const noexcept // cc2 et +
   {
       Node * cur = head;
-      size_t count = 0;
-      while(cur)
+      size_t counter = 0;
+
+      while (cur)
       {
-          if(cur->data == value)
+          if (cur->data == value)
           {
-              return count;
+              return counter;
           }
           cur = cur->next;
-          count++;
+          counter++;
       }
       return -1;
   }
