@@ -121,6 +121,7 @@ public:
   LinkedList& operator = (const LinkedList& other) // cc2 et +
   {
     //allocation dynamique page 28 et autre version page 50
+  
       LinkedList tmp(other);
 
       //swap tmp et this
@@ -146,6 +147,7 @@ public:
           delete newNode;
       }
       nbElements = 0;
+      head = nullptr;
   }
   
 public:
@@ -218,7 +220,7 @@ public:
           throw runtime_error("La liste est vide");
       }
 
-      Node* tmp = new Node(head->data);
+      Node* tmp = head;
       head = head->next;
       delete tmp;
       nbElements--;
