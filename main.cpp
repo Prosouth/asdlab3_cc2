@@ -3,7 +3,6 @@
 //
 //  Copyright (c) 2016 Olivier Cuisenaire. All rights reserved.
 //
-
 #include <iostream>
 #include <stdexcept>
 #include <cstdlib>
@@ -36,7 +35,8 @@ private:
    * 
    * contient une valeur et le lien vers le maillon suivant.
    */
-  struct Node {
+  struct Node 
+  {
     value_type data;
     Node* next;
     Node(const_reference data, Node* next = nullptr)
@@ -81,28 +81,32 @@ public:
    *
    *  @param other la LinkedList à copier
    */
-  LinkedList(const LinkedList& other ) : nbElements(other.nbElements)//, head(nullptr)
+  LinkedList(const LinkedList& other) 
   {
-      try {
-          if(this == &other){
+      nbElements = other.nbElements;
+      try 
+      {
+          if(this == &other)
+          {
               return;
-          } else{
-              Node* current = other.head->next;
-              Node* copy = head = new Node(other.head->data,nullptr);
+          } 
+          else
+          {
+              head = new Node(other.head->data,nullptr);
+              Node* cur = other.head->next;
+              Node* copy = head;
               
-              while (current != nullptr) {
-                  //crée une copy du noeud pointé de curent
-                  copy->next = new Node(current->data,nullptr);
-                  //Update pointer
-                  current = current->next;
+              while (cur != nullptr) 
+              {
+                  copy->next = new Node(cur->data,nullptr);
+                  cur = cur->next;
                   copy = copy->next;
               } 
           }
-      } catch (const bad_alloc& e) {
-          throw;
-      }
+      } 
+      catch (const bad_alloc& e) {throw;}
 
-  }
+  } 
 
 public:
   /**
@@ -177,7 +181,8 @@ public:
         Node* newNode = new Node(value, head);
         head = newNode;
         nbElements++;
-      }catch(const bad_alloc& e) {throw;}
+      }
+      catch(const bad_alloc& e) {throw;}
   }
   
 public:
@@ -219,7 +224,6 @@ public:
       {
           throw runtime_error("La liste est vide");
       }
-
       Node* tmp = head;
       head = head->next;
       delete tmp;
@@ -268,10 +272,7 @@ public:
                         }
                         nbElements++;
                     } 
-                    catch (const bad_alloc& e) 
-                    {
-                        throw;
-                    }
+                    catch (const bad_alloc& e) {throw;}
                     break;
                 }
                 prev = prev->next;
@@ -324,7 +325,6 @@ public:
     for (size_t i = 0; i < pos; ++i)
     {
         cur = cur->next;
-        
     }
     return cur->data;
   }
@@ -420,7 +420,6 @@ ostream& operator << (ostream& os, const LinkedList<T>& liste)
 
 int main()
 {
-  
   const int N = 10;
   
   cout << "Creation d'une liste de " << N << " entiers aléatoires \n";
