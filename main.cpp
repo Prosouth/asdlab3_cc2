@@ -83,9 +83,30 @@ public:
    */
   LinkedList(const LinkedList& other) // cc2 et +
   {
+      LinkedList copy;
+      if(other.head->data == NULL)
+      {
+          return copy;
+      }
+      
+      
+      copy.push_front(other.head);
+      Node* end_copy = copy.head;
+      
+      Node* cur = other.head->next;
+      while(cur != NULL)
+      {
+          copy.insert(end_copy, cur->data);
+          end_copy = end_copy->next;
+          cur = cur->next;
+      }
+      
+      return copy;
+      
+      /*
       other.head->data = new Node[other.nbElements];
       nbElements = other.nbElements;
-      copy(other.head->data + nbElements, other.head->next);
+      copy(other.head->data + nbElements, other.head->next);*/
   }
 
 public:
