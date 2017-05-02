@@ -86,22 +86,22 @@ public:
       LinkedList copy;
       if(other.head->data == NULL)
       {
-          //return copy; je sais pas quoi mettre comme val de retour
+           copy = other; 
       }
       
       
-      copy.push_front(other.head);
+      copy.push_front(other.head->data);
       Node* end_copy = copy.head;
       
       Node* cur = other.head->next;
       while(cur != NULL)
       {
-          copy.insert(end_copy, cur->data);
+          copy.insert(end_copy->data, cur->data);
           end_copy = end_copy->next;
           cur = cur->next;
       }
       
-      //return copy; je sais pas quoi mettre comme val de retour
+       copy = other; 
       
       /*
       other.head->data = new Node[other.nbElements];
@@ -126,7 +126,12 @@ public:
   LinkedList& operator = (const LinkedList& other) // cc2 et +
   {
     //allocation dynamique page 28 et autre version page 50
-      
+      LinkedList tmp = other;
+
+      //swap tmp et this
+      swap(head, tmp.head);
+      swap(nbElements, tmp.nbElements);
+
     //return *this;
     // Selon le prof, utiliser la fonction de la page 50 (chap 10)
     // ne pas mettre le move()
