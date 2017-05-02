@@ -86,7 +86,7 @@ public:
       LinkedList copy;
       if(other.head->data == NULL)
       {
-          return copy;
+          //return copy; je sais pas quoi mettre comme val de retour
       }
       
       
@@ -101,7 +101,7 @@ public:
           cur = cur->next;
       }
       
-      return copy;
+      //return copy; je sais pas quoi mettre comme val de retour
       
       /*
       other.head->data = new Node[other.nbElements];
