@@ -322,33 +322,37 @@ public:
   }
   
 public:
-  /**
-   *  @brief Suppression en position quelconque
-   *
-   *  @param pos la position, 0 est la position en tete
-   *
-   *  @exception std::out_of_range("LinkedList::erase") si pos non valide
-   */
-  void erase( size_t pos ) {
-     if(pos >= nbElements) throw out_of_range("LinkedList::erase");     
-     Node* current = head;
-     if(pos == 0){
-         pop_front(); 
-         return;
-     }
-     for(size_t i = 1 ; i <= nbElements ; i++){
-         current = current->next;
-         if( i == pos-1){
-             break; 
-         }
-     }
-     
-     Node* tmp = current->next;
-     current->next = tmp->next;
-      
-     delete tmp;
-     --nbElements;
-  }
+/**
+     *  @brief Suppression en position quelconque
+     *
+     *  @param pos la position, 0 est la position en tete
+     *
+     *  @exception std::out_of_range("LinkedList::erase") si pos non valide
+     */
+    void erase(size_t pos)
+    {
+        Node* tmp = head;
+        Node* cur = head;
+
+        if (pos > nbElements) {
+            throw out_of_range("LinkedList::erase");
+        } else if (pos == 0) {
+            pop_front();
+            return;
+        } else {
+            for (size_t i = 1; i <= nbElements; i++) {
+                cur = cur->next;
+                if (pos - 1 == i) {
+                    break;
+                }
+            }
+
+        }
+        tmp = cur->next;
+        cur->next = tmp->next;
+        delete tmp;
+        nbElements--;
+    }
   
 public:
   /**
