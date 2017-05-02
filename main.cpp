@@ -333,7 +333,17 @@ public:
    */
   size_t find(const_reference value) const noexcept // cc2 et +
   {
-    /* ... */
+      Node * cur = head;
+      size_t count = 0;
+      while(cur)
+      {
+          if(cur->data == value)
+          {
+              return count;
+          }
+          cur = cur->next;
+          count++;
+      }
   }
   
   /**
@@ -359,7 +369,8 @@ ostream& operator << (ostream& os, const LinkedList<T>& liste)
 }
 
 
-int main() {
+int main()
+{
   
   const int N = 10;
   
