@@ -334,15 +334,21 @@ public:
         Node* tmp = head;
         Node* cur = head;
 
-        if (pos > nbElements) {
+        if (pos >= nbElements) {
             throw out_of_range("LinkedList::erase");
-        } else if (pos == 0) {
+        } 
+        else if (pos == 0) 
+        {
             pop_front();
             return;
-        } else {
-            for (size_t i = 1; i <= nbElements; i++) {
+        } 
+        else 
+        {
+            for (size_t i = 1; i <= nbElements; i++) 
+            {
                 cur = cur->next;
-                if (pos - 1 == i) {
+                if (pos - 1 == i) 
+                {
                     break;
                 }
             }
