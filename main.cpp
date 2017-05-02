@@ -225,51 +225,57 @@ public:
   }
   
 public:
-  /**
-   *  @brief Insertion en position quelconque
-   *
-   *  @param value la valeur à insérer
-   *  @param pos   la position où insérer, 0 est la position en tete
-   *
-   *  @exception std::out_of_range("LinkedList::insert") si pos non valide
-   *
-   *  @exception std::bad_alloc si pas assez de mémoire, où toute autre exception lancée par la constructeur de copie de value_type
-   */
-  void insert(const_reference value, size_t pos) 
-  {
-      if (pos > nbElements)
-      {
-          throw out_of_range("LinkedList::insert");
-      }
-      Node* cur = head;
-      Node* prev = head;
 
-      if (pos == 0)
-      {
-          push_front(value);
-      }
-      else
-      {
-          try
-          {
-              for(size_t i = 1; i <= nbElements; ++i)
-              {
-                  if(i == pos)
-                  {
-                      Node* nodeToInsert = new Node(value, cur->next);
-                      cur->next = nodeToInsert;
-                      if(pos == nbElements)
-                      {
-                          cur = nullptr;
-                      }
-                  }
-                  nbElements++;
-              }
-              prev = prev->next;
-          }
-          catch(const bad_alloc& e){throw;}
-      }
-  }
+/**
+     *  @brief Insertion en position quelconque
+     *
+     *  @param value la valeur à insérer
+     *  @param pos   la position où insérer, 0 est la position en tete
+     *
+     *  @exception std::out_of_range("LinkedList::insert") si pos non valide
+     *
+     *  @exception std::bad_alloc si pas assez de mémoire, où toute autre exception lancée par la constructeur de copie de value_type
+     */
+    void insert(const_reference value, size_t pos)
+    {
+        if (pos > nbElements) 
+        {
+            throw out_of_range("LinkedList::insert");
+        }
+        Node* cur = head;
+        Node* prev = head;
+        
+        if (pos == 0) 
+        {
+            push_front(value);
+        } 
+        else 
+        {
+            for (size_t i = 1; i <= nbElements; ++i) 
+            {
+                cur = cur->next;
+                if (i == pos) 
+                {
+                    try 
+                    {
+                        Node* nodeToInsert = new Node(value, cur);
+                        prev->next = nodeToInsert;
+                        if (pos == nbElements) 
+                        {
+                            cur = nullptr;
+                        }
+                        nbElements++;
+                    } 
+                    catch (const bad_alloc& e) 
+                    {
+                        throw;
+                    }
+                    break;
+                }
+                prev = prev->next;
+            }
+        }
+    }
   
 public:
   /**
@@ -334,7 +340,8 @@ public:
         Node* tmp = head;
         Node* cur = head;
 
-        if (pos >= nbElements) {
+        if (pos >= nbElements) 
+        {
             throw out_of_range("LinkedList::erase");
         } 
         else if (pos == 0) 
