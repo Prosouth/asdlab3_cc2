@@ -3,7 +3,6 @@
 //
 //  Copyright (c) 2016 Olivier Cuisenaire. All rights reserved.
 //
-
 #include <iostream>
 #include <stdexcept>
 #include <cstdlib>
@@ -36,7 +35,8 @@ private:
    * 
    * contient une valeur et le lien vers le maillon suivant.
    */
-  struct Node {
+  struct Node 
+  {
     value_type data;
     Node* next;
     Node(const_reference data, Node* next = nullptr)
@@ -81,11 +81,32 @@ public:
    *
    *  @param other la LinkedList à copier
    */
-  LinkedList(const LinkedList& other) // cc2 et +
+  LinkedList(const LinkedList& other) 
   {
-      head = nullptr;
-      *this = other;
-  }
+      nbElements = other.nbElements;
+      try 
+      {
+          if(this == &other)
+          {
+              return ;
+          } 
+          else
+          {
+              head = new Node(other.head->data,nullptr);
+              Node* cur = other.head->next;
+              Node* copy = head;
+              
+              while (cur != nullptr) 
+              {
+                  copy->next = new Node(cur->data,nullptr);
+                  cur = cur->next;
+                  copy = copy->next;
+              } 
+          }
+      } 
+      catch (const bad_alloc& e) {throw;}
+
+  } 
 
 public:
   /**
@@ -103,51 +124,11 @@ public:
    */
   LinkedList& operator = (const LinkedList& other) // cc2 et +
   {
-    //allocation dynamique page 28 et autre version page 50
-    /*
-      LinkedList tmp = other;
-
+      LinkedList tmp(other);
       //swap tmp et this
       swap(head, tmp.head);
       swap(nbElements, tmp.nbElements);
-
-      using std::swap;
-      swap(this->next, rhs->next);
-      swap(this->data, rhs->data);
-    */
-    //return *this;
-    // Selon le prof, utiliser la fonction de la page 50 (chap 10)
-    // ne pas mettre le move()
-    // 2017-05-02@18:45
-    if (this != &other) // s'il sont différents
-    {
-        if (head != nullptr)
-        {
-            // Vider la liste
-            while (head != nullptr)
-            {
-                pop_front();
-            }
-        }
-        Node* copyPtr = nullptr;
-        Node* originalPtr = other.head;
-
-        while (originalPtr != nullptr)
-        {
-            if (head == nullptr)
-            {
-                head = new Node(originalPtr->data);
-                copyPtr = head;
-            }
-            else
-            {
-                copyPtr->next = new Node(originalPtr->data);
-                copyPtr = copyPtr->next;
-            }
-            originalPtr = originalPtr->next;
-        }
-    }
-    return *this;
+      return *this;
   }
   
 public:
@@ -164,6 +145,7 @@ public:
           delete newNode;
       }
       nbElements = 0;
+      head = nullptr;
   }
   
 public:
@@ -188,9 +170,13 @@ public:
   void push_front(const_reference value) 
   {
       // Si pas assez de mémoire, bad_alloc est automatiquement lancé
-      Node* newNode = new Node(value, head);
-      head = newNode;
-      nbElements++;
+      try
+      {
+        Node* newNode = new Node(value, head);
+        head = newNode;
+        nbElements++;
+      }
+      catch(const bad_alloc& e) {throw;}
   }
   
 public:
@@ -232,51 +218,61 @@ public:
       {
           throw runtime_error("La liste est vide");
       }
-
-      Node* tmp = new Node(head->data);
+      Node* tmp = head;
       head = head->next;
       delete tmp;
       nbElements--;
   }
   
 public:
-  /**
-   *  @brief Insertion en position quelconque
-   *
-   *  @param value la valeur à insérer
-   *  @param pos   la position où insérer, 0 est la position en tete
-   *
-   *  @exception std::out_of_range("LinkedList::insert") si pos non valide
-   *
-   *  @exception std::bad_alloc si pas assez de mémoire, où toute autre exception lancée par la constructeur de copie de value_type
-   */
-  void insert(const_reference value, size_t pos) 
-  {
-      if (pos < 0 or pos > nbElements)
-      {
-          throw out_of_range("LinkedList::insert");
-      }
 
-      Node* cur = head;
-      size_t counter = 1;
-
-      if (pos == 0)
-      {
-          this->push_front(value);
-      }
-      else
-      {
-          while (cur != nullptr && counter != pos)
-          {
-              cur = cur->next;
-              counter++;
-          }
-
-          Node* nodeToInsert = new Node(value, cur->next);
-          cur->next = nodeToInsert;
-          nbElements++;
-      }
-  }
+/**
+     *  @brief Insertion en position quelconque
+     *
+     *  @param value la valeur à insérer
+     *  @param pos   la position où insérer, 0 est la position en tete
+     *
+     *  @exception std::out_of_range("LinkedList::insert") si pos non valide
+     *
+     *  @exception std::bad_alloc si pas assez de mémoire, où toute autre exception lancée par la constructeur de copie de value_type
+     */
+    void insert(const_reference value, size_t pos)
+    {
+        if (pos > nbElements) 
+        {
+            throw out_of_range("LinkedList::insert");
+        }
+        Node* cur = head;
+        Node* prev = head;
+        
+        if (pos == 0) 
+        {
+            push_front(value);
+        } 
+        else 
+        {
+            for (size_t i = 1; i <= nbElements; ++i) 
+            {
+                cur = cur->next;
+                if (i == pos) 
+                {
+                    try 
+                    {
+                        Node* nodeToInsert = new Node(value, cur);
+                        prev->next = nodeToInsert;
+                        if (pos == nbElements) 
+                        {
+                            cur = nullptr;
+                        }
+                        nbElements++;
+                    } 
+                    catch (const bad_alloc& e) {throw;}
+                    break;
+                }
+                prev = prev->next;
+            }
+        }
+    }
   
 public:
   /**
@@ -314,7 +310,7 @@ public:
    */
   const_reference at(size_t pos) const 
   {
-    if (head == nullptr or pos > (nbElements - 1))
+    if (pos > (nbElements - 1))
     {
         throw out_of_range("LinkedList::at");
     }
@@ -323,49 +319,49 @@ public:
     for (size_t i = 0; i < pos; ++i)
     {
         cur = cur->next;
-        
     }
     return cur->data;
   }
   
 public:
-  /**
-   *  @brief Suppression en position quelconque
-   *
-   *  @param pos la position, 0 est la position en tete
-   *
-   *  @exception std::out_of_range("LinkedList::erase") si pos non valide
-   */
-  void erase(size_t pos) 
-  {
-      Node* tmp = head;
-      Node* cur = head;
-      Node* nodeToErase = nullptr;
-      size_t counter = 0;
+/**
+     *  @brief Suppression en position quelconque
+     *
+     *  @param pos la position, 0 est la position en tete
+     *
+     *  @exception std::out_of_range("LinkedList::erase") si pos non valide
+     */
+    void erase(size_t pos)
+    {
+        Node* tmp = head;
+        Node* cur = head;
 
-      if (pos == 0)
-      {
-          head = nullptr;
-      }
-      else
-      {
-          while (cur != nullptr && counter != pos)
-          {
-              tmp = cur;
-              cur = cur->next;
-              counter++;
-          }
+        if (pos >= nbElements) 
+        {
+            throw out_of_range("LinkedList::erase");
+        } 
+        else if (pos == 0) 
+        {
+            pop_front();
+            return;
+        } 
+        else 
+        {
+            for (size_t i = 1; i <= nbElements; i++) 
+            {
+                cur = cur->next;
+                if (pos - 1 == i) 
+                {
+                    break;
+                }
+            }
 
-          if (pos == counter)
-          {
-              nodeToErase = cur;
-              cur = cur->next;
-              tmp->next = cur;
-              delete nodeToErase;
-              nbElements--;
-          }
-      }
-  }
+        }
+        tmp = cur->next;
+        cur->next = tmp->next;
+        delete tmp;
+        nbElements--;
+    }
   
 public:
   /**
@@ -379,17 +375,16 @@ public:
    */
   size_t find(const_reference value) const noexcept // cc2 et +
   {
-      Node * cur = head;
-      size_t counter = 0;
-
-      while (cur)
+      Node* cur = head;
+      size_t count = 0;
+      while(cur)
       {
-          if (cur->data == value)
+          if(cur->data == value)
           {
-              return counter;
+              return count;
           }
           cur = cur->next;
-          counter++;
+          count++;
       }
       return -1;
   }
@@ -399,7 +394,13 @@ public:
    */
   void sort()  // cc2 et +
   {
-    /* ... */
+    // Trouver l'élément au milieu du tableau, slide 59
+    Node* elementPtr = head, full = head;
+    while (full && full->next)
+    {
+        half = half->next;
+        full = full->next->next;
+    }
   }
   
 };
@@ -419,7 +420,6 @@ ostream& operator << (ostream& os, const LinkedList<T>& liste)
 
 int main()
 {
-  
   const int N = 10;
   
   cout << "Creation d'une liste de " << N << " entiers aléatoires \n";
